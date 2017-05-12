@@ -56,11 +56,10 @@ const text = "hello world";
 
 ### Options
 
-- You may set the ```encoding``` of the JavaScript source files that will be parsed. 
+- You may define a specific ```encoding``` for the JavaScript files that should be processed. 
 Use one of the possible encoding values specified in node's [Buffer](https://github.com/nodejs/node/blob/master/lib/buffer.js) class. 
 The default encoding is _utf8_.
-- Only those imports with matching file ```extensions``` will be considered. 
-Each extension must define its own encoding.
+- Only imports with matching file ```extensions``` will be considered. Each extension must define its own encoding.
 - If, for some reason, you don't want to use the _const_ statement, set ```useVar``` to _true_.  
 
 ```javascript
