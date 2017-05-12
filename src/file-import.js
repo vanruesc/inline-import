@@ -8,7 +8,7 @@
  * @param {String} name - The name of the imported data.
  * @param {String} path - The path of the imported file.
  * @param {String} encoding - The file encoding.
- * @param {Number} [data=null] - The contents of the imported file.
+ * @param {String} [data=null] - The contents of the imported file.
  */
 
 export class FileImport {

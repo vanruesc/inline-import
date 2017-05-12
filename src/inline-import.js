@@ -286,7 +286,7 @@ export class InlineImport {
 	 * @param {String} [options.encoding] - The encoding of the given file.
 	 * @param {Object} [options.extensions] - The import file extensions to consider. Each extension must define an encoding.
 	 * @param {Boolean} [options.useVar] - Whether the var declaration should be used instead of const.
-	 * @param {Function} done - A callback function.
+	 * @param {Function} done - A callback function with one argument. Any value other than null indicates an error.
 	 */
 
 	static transform(file, options, done) {
