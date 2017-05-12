@@ -14,6 +14,13 @@ raw file contents directly into your JavaScript files during build time. The
 type of the external files is irrelevant.
 
 
+## Installation
+
+```sh
+npm install inline-import
+``` 
+
+
 ## Usage
 
 The inlining process is __destructive__. Affected files will be changed __permanently__.  
