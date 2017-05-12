@@ -1,0 +1,12 @@
+import { x } from "alphabet";
+import ignore from "./ignore.html";
+import fs from "fs";
+
+const fragment = "void main() { gl_FragColor = vec4(0.0); }";
+const vertex = "void main() { gl_Position = vec4(0.0); }";
+
+export default function test() {
+
+	console.log(x, ignore, fs, fragment, vertex);
+
+}
