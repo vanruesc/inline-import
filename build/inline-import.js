@@ -1,5 +1,5 @@
 /**
- * inline-import v0.0.0 build May 12 2017
+ * inline-import v0.0.1 build May 13 2017
  * https://github.com/vanruesc/inline-import
  * Copyright 2017 Raoul van Rüschen, Zlib
  */
@@ -46,7 +46,7 @@ var createClass = function () {
  * @param {String} name - The name of the imported data.
  * @param {String} path - The path of the imported file.
  * @param {String} encoding - The file encoding.
- * @param {Number} [data=null] - The contents of the imported file.
+ * @param {String} [data=null] - The contents of the imported file.
  */
 
 var FileImport = function FileImport(start, end, name, path$$1, encoding) {
@@ -425,7 +425,7 @@ var InlineImport = function () {
    * @param {String} [options.encoding] - The encoding of the given file.
    * @param {Object} [options.extensions] - The import file extensions to consider. Each extension must define an encoding.
    * @param {Boolean} [options.useVar] - Whether the var declaration should be used instead of const.
-   * @param {Function} done - A callback function.
+   * @param {Function} done - A callback function with one argument. Any value other than null indicates an error.
    */
 
 		value: function transform(file, options, done) {
