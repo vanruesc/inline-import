@@ -61,7 +61,7 @@ const text = "hello world";
 ```
 
 
-### Options
+## Options
 
 - You may define a specific ```encoding``` for the JavaScript files that should be processed. 
 Use one of the possible encoding values specified in node's [Buffer](https://github.com/nodejs/node/blob/master/lib/buffer.js) class. 
