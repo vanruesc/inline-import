@@ -4,14 +4,21 @@
 [![npm version](https://badge.fury.io/js/inline-import.svg)](https://badge.fury.io/js/inline-import)
 [![Dependencies](https://david-dm.org/vanruesc/inline-import.svg?branch=master)](https://david-dm.org/vanruesc/inline-import)
 
-This tool inlines custom file imports.
+A tool that inlines custom file imports.
 
 
 ## Use Case
 
 Instead of loading external files during runtime, you may wish to integrate the 
-raw file contents directly into your JavaScript files during build time. The 
-type of the external files is irrelevant.
+raw file contents directly into your JavaScript files during build time. This
+can be achieved by using this tool and the native ```import``` syntax:
+
+```javascript
+import data from "data.png";
+```
+
+The type of the external file is irrelevant. You only need to specify its
+encoding.
 
 
 ## Installation
