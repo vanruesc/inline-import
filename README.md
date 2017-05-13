@@ -57,7 +57,7 @@ InlineImport.transform("index.js", {
 	extensions: {
 		".txt": "utf8"
 	}
-});
+}, function done(error) {});
 ```
 
 ##### index.js (inlined)
