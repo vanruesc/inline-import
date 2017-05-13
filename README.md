@@ -11,14 +11,14 @@ A tool that inlines custom file imports.
 
 Instead of loading external files during runtime, you may wish to integrate the 
 raw file contents directly into your JavaScript files during build time. This
-can be achieved by using this tool and the native ```import``` syntax:
+can be achieved using the native ```import``` syntax:
 
 ```javascript
-import data from "data.png";
+import data from "./data.png";
 ```
 
 The type of the external file is irrelevant. You only need to specify its
-encoding.
+encoding so that the tool knows what's up.
 
 
 ## Installation
