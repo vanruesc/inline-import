@@ -282,11 +282,11 @@ export class InlineImport {
 	 * @method transform
 	 * @static
 	 * @param {String} file - A source file.
-	 * @param {Object} options - The options.
+	 * @param {Object} [options] - The options.
 	 * @param {String} [options.encoding] - The encoding of the given file.
 	 * @param {Object} [options.extensions] - The import file extensions to consider. Each extension must define an encoding.
 	 * @param {Boolean} [options.useVar] - Whether the var declaration should be used instead of const.
-	 * @param {Function} done - A callback function with one argument. Any value other than null indicates an error.
+	 * @param {Function} [done] - An optional callback function with one argument (any value other than null indicates an error).
 	 */
 
 	static transform(file, options, done) {
