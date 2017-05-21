@@ -88,6 +88,11 @@ InlineImport.transform(file, {
 ```
 
 
+## Build Tools
+
+ - [Inline Import Grunt plugin](https://github.com/vanruesc/grunt-inline-import)
+
+
 ## Contributing
 
 Maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code.
