@@ -8,11 +8,8 @@ import { Settings } from "./settings.js";
 /**
  * A regular expression that detects import statements.
  *
- * @property importRegExp
- * @type RegExp
+ * @type {RegExp}
  * @private
- * @static
- * @final
  */
 
 const importRegExp = /import\s*(\w*)\s*from\s*[\"\'](.*)[\"\']/ig;
@@ -20,10 +17,7 @@ const importRegExp = /import\s*(\w*)\s*from\s*[\"\'](.*)[\"\']/ig;
 /**
  * The current inlining settings.
  *
- * @property settings
- * @type Settings
- * @private
- * @static
+ * @type {Settings}
  */
 
 let settings = null;
@@ -31,9 +25,7 @@ let settings = null;
 /**
  * Checks if the given file exists.
  *
- * @method checkFile
  * @private
- * @static
  * @param {Function} next - A callback.
  */
 
@@ -46,9 +38,7 @@ function checkFile(next) {
 /**
  * Reads the given file.
  *
- * @method readFile
  * @private
- * @static
  * @param {Function} next - A callback.
  */
 
@@ -61,9 +51,7 @@ function readFile(next) {
 /**
  * Parses the file for import statements.
  *
- * @method parseImports
  * @private
- * @static
  * @param {String} data - The file contents.
  * @param {Function} next - A callback.
  */
@@ -96,9 +84,7 @@ function parseImports(data, next) {
 /**
  * Filters imports.
  *
- * @method filterImports
  * @private
- * @static
  * @param {FileImport[]} imports - A list of all identified import statements.
  * @param {String} data - The file contents.
  * @param {Function} next - A callback.
@@ -129,9 +115,7 @@ function filterImports(imports, data, next) {
  * Checks if the remaining imports are valid. If only one import is invalid, the
  * entire inlining process will be cancelled.
  *
- * @method checkImports
  * @private
- * @static
  * @param {FileImport[]} imports - A list of all relevant import statements.
  * @param {String} data - The file contents.
  * @param {Function} next - A callback.
@@ -161,9 +145,7 @@ function checkImports(imports, data, next) {
 /**
  * Reads the contents of the imported files.
  *
- * @method readImports
  * @private
- * @static
  * @param {FileImport[]} imports - A list of all relevant and valid import statements.
  * @param {String} data - The file contents.
  * @param {Function} next - A callback.
@@ -212,9 +194,7 @@ function readImports(imports, data, next) {
 /**
  * Replaces the affected import statements with the actual file contents.
  *
- * @method inlineImports
  * @private
- * @static
  * @param {FileImport[]} imports - A list of all relevant imports.
  * @param {String} data - The original file contents.
  * @param {Function} next - A callback.
@@ -243,9 +223,7 @@ function inlineImports(imports, data, next) {
 /**
  * Applies the changes by overwriting the original file.
  *
- * @method writeFile
  * @private
- * @static
  * @param {Boolean} modified - Indicates whether the file contents have been modified.
  * @param {String} data - The modified file contents.
  * @param {Function} next - A callback.
@@ -268,9 +246,6 @@ function writeFile(modified, data, next) {
 
 /**
  * Inlines file imports.
- *
- * @class InlineImport
- * @static
  */
 
 export class InlineImport {
@@ -279,8 +254,6 @@ export class InlineImport {
 	 * Transforms the given file by replacing custom file imports with the actual
 	 * file contents.
 	 *
-	 * @method transform
-	 * @static
 	 * @param {String} file - A source file.
 	 * @param {Object} [options] - The options.
 	 * @param {String} [options.encoding] - The encoding of the given file.
