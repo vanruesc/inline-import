@@ -12,7 +12,7 @@ import { Settings } from "./settings.js";
  * @private
  */
 
-const importRegExp = /import\s*(\w*)\s*from\s*[\"\'](.*)[\"\']/ig;
+const importRegExp = /import\s*(\w*)\s*from\s*["'](.*)["']/ig;
 
 /**
  * The current inlining settings.
