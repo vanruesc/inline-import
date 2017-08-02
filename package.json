@@ -1,6 +1,6 @@
 {
 	"name": "inline-import",
-	"version": "0.0.3",
+	"version": "0.0.4",
 	"description": "A tool for inlining file imports.",
 	"homepage": "https://github.com/vanruesc/inline-import",
 	"main": "build/inline-import.js",
