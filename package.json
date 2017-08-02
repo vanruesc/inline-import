@@ -12,7 +12,8 @@
 		"glsl", "frag", "vert", "shader",
 		"html", "css", "xml", "txt",
 		"binary", "hex", "buffer",
-		"jpg", "png", "image"
+		"jpg", "png", "image",
+		"base64"
 	],
 
 	"author": {
