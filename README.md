@@ -54,9 +54,11 @@ import text from "./text.txt";
 import InlineImport from "inline-import";
 
 InlineImport.transform("index.js", {
+
 	extensions: {
 		".txt": "utf8"
 	}
+
 }, function done(error) {});
 ```
 
