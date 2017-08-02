@@ -17,8 +17,8 @@ can be achieved using the native ```import``` syntax:
 import data from "./data.png";
 ```
 
-The type of the external file is irrelevant. You only need to specify its
-encoding so that the tool knows what's up.
+The type of the external file is irrelevant. You only need to specify a
+preferred encoding for each file type.
 
 
 ## Installation
