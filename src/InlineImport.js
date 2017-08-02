@@ -2,8 +2,8 @@ import waterfall from "async-waterfall";
 import path from "path";
 import fs from "fs";
 
-import { FileImport } from "./file-import.js";
-import { Settings } from "./settings.js";
+import { FileImport } from "./FileImport.js";
+import { Settings } from "./Settings.js";
 
 /**
  * A regular expression that detects import statements.
