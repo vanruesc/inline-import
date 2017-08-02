@@ -79,7 +79,7 @@ The default encoding is _utf8_.
 - If, for some reason, you don't want to use the _const_ statement, set ```useVar``` to _true_.  
 
 ```javascript
-InlineImport.transform(file, {
+InlineImport.transform(filePath, {
 	encoding: "utf8",
 	useVar: true,
 	extensions: {
