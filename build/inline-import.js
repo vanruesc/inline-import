@@ -1,5 +1,5 @@
 /**
- * inline-import v0.0.5 build Aug 18 2017
+ * inline-import v0.0.6 build Aug 19 2017
  * https://github.com/vanruesc/inline-import
  * Copyright 2017 Raoul van Rüschen, Zlib
  */
