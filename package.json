@@ -44,13 +44,14 @@
 		"npm": ">=4.0.0"
 	},
 
-	"dependencies": {
-		"async-waterfall": "0.x.x"
+	"eslintConfig": {
+		"extends": "delta"
 	},
 
 	"devDependencies": {
 		"babel-core": "6.x.x",
 		"babel-preset-es2015-rollup": "3.x.x",
+		"eslint-config-delta": "0.x.x",
 		"grunt": "1.x.x",
 		"grunt-cli": "1.x.x",
 		"grunt-contrib-nodeunit": "1.x.x",
