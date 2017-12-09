@@ -1,5 +1,5 @@
 /**
- * inline-import v0.0.6 build Aug 19 2017
+ * inline-import v0.1.0 build Dec 09 2017
  * https://github.com/vanruesc/inline-import
  * Copyright 2017 Raoul van Rüschen, Zlib
  */
@@ -8,7 +8,6 @@
 
 function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
-var waterfall = _interopDefault(require('async-waterfall'));
 var path = _interopDefault(require('path'));
 var fs = _interopDefault(require('fs'));
 
@@ -36,6 +35,56 @@ var createClass = function () {
   };
 }();
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+var toConsumableArray = function (arr) {
+  if (Array.isArray(arr)) {
+    for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i];
+
+    return arr2;
+  } else {
+    return Array.from(arr);
+  }
+};
+
 var FileImport = function FileImport(start, end, name, path$$1, encoding) {
 		var data = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : null;
 		classCallCheck(this, FileImport);
@@ -54,135 +103,106 @@ var FileImport = function FileImport(start, end, name, path$$1, encoding) {
 		this.data = data;
 };
 
-var Settings = function Settings(file) {
-		var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+var Settings = function Settings() {
+		var encoding = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "utf8";
+		var extensions = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+		var useVar = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
 		classCallCheck(this, Settings);
 
 
-		this.file = file;
+		this.encoding = encoding;
 
-		this.encoding = options.encoding !== undefined ? options.encoding : "utf8";
+		this.extensions = extensions;
 
-		this.extensions = options.extensions !== undefined ? options.extensions : null;
-
-		this.declaration = options.useVar !== undefined && options.useVar ? "var" : "const";
+		this.declaration = useVar ? "var" : "const";
 };
 
 var importRegExp = /import\s*(\w*)\s*from\s*["'](.*)["']/ig;
 
-var settings = null;
+function readFile(file, encoding) {
 
-function checkFile(next) {
+	return new Promise(function (resolve, reject) {
 
-	fs.access(settings.file, fs.R_OK | fs.W_OK, next);
+		fs.readFile(file, encoding, function (error, data) {
+			return error ? reject(error) : resolve(data);
+		});
+	});
 }
 
-function readFile(next) {
-
-	fs.readFile(settings.file, settings.encoding, next);
-}
-
-function parseImports(data, next) {
+function parseImports(data, file, extensions) {
 
 	var imports = [];
 
 	var result = importRegExp.exec(data);
+	var encoding = void 0;
 
 	while (result !== null) {
 
-		imports.push(new FileImport(result.index, importRegExp.lastIndex, result[1], path.resolve(path.dirname(settings.file), result[2]), settings.extensions[path.extname(result[2])]));
+		encoding = extensions[path.extname(result[2])];
+
+		if (encoding !== undefined) {
+
+			imports.push(new FileImport(result.index, importRegExp.lastIndex, result[1], path.resolve(path.dirname(file), result[2]), encoding));
+		}
 
 		result = importRegExp.exec(data);
 	}
 
-	next(null, imports, data);
+	return Promise.resolve([imports, data]);
 }
 
-function filterImports(imports, data, next) {
+function readImports(imports, data) {
 
-	var filteredImports = [];
+	return imports.length === 0 ? Promise.resolve([imports, data]) : new Promise(function (resolve, reject) {
 
-	var i = void 0,
-	    l = void 0;
+		var i = 0;
 
-	for (i = 0, l = imports.length; i < l; ++i) {
+		(function proceed(error, importData) {
 
-		if (imports[i].encoding !== undefined) {
+			if (importData) {
 
-			filteredImports.push(imports[i]);
-		}
-	}
-
-	next(null, filteredImports, data);
-}
-
-function checkImports(imports, data, next) {
-
-	var i = 0;
-	var l = imports.length;
-
-	(function proceed(error) {
-
-		if (error || i === l) {
-
-			next(error, imports, data);
-		} else {
-
-			fs.access(imports[i++].path, fs.R_OK | fs.W_OK, proceed);
-		}
-	})();
-}
-
-function readImports(imports, data, next) {
-
-	var j = void 0;
-	var i = -1;
-	var l = imports.length;
-
-	(function proceed(error, importData) {
-
-		j = i;
-
-		if (error || ++i === l) {
-			if (l > 0) {
-				imports[j].data = importData;
+				imports[i++].data = importData;
 			}
 
-			next(error, imports, data);
-		} else {
-			if (i > 0) {
-				imports[j].data = importData;
-			}
+			if (error) {
 
-			fs.readFile(imports[i].path, imports[i].encoding, proceed);
-		}
-	})();
+				reject(error);
+			} else if (i === imports.length) {
+
+				resolve([imports, data]);
+			} else {
+
+				fs.readFile(imports[i].path, imports[i].encoding, proceed);
+			}
+		})();
+	});
 }
 
-function inlineImports(imports, data, next) {
+function inlineImports(imports, data, declaration) {
 
 	var modified = imports.length > 0;
-	var i = void 0;
+	var i = void 0,
+	    item = void 0;
 
-	while (imports.length > 0) {
+	for (i = imports.length - 1; i >= 0; --i) {
 
-		i = imports.pop();
+		item = imports[i];
 
-		data = data.substring(0, i.start) + settings.declaration + " " + i.name + " = " + JSON.stringify(i.data) + data.substring(i.end);
+		data = data.substring(0, item.start) + declaration + " " + item.name + " = " + JSON.stringify(item.data) + data.substring(item.end);
 	}
 
-	next(null, modified, data);
+	return Promise.resolve([modified, data]);
 }
 
-function writeFile(modified, data, next) {
+function writeFile(modified, data, file) {
 
-	if (modified) {
+	return !modified ? Promise.resolve() : new Promise(function (resolve, reject) {
 
-		fs.writeFile(settings.file, data, next);
-	} else {
+		fs.writeFile(file, data, function (error) {
 
-		next(null);
-	}
+			error ? reject(error) : resolve();
+		});
+	});
 }
 
 var InlineImport = function () {
@@ -192,11 +212,21 @@ var InlineImport = function () {
 
 	createClass(InlineImport, null, [{
 		key: "transform",
-		value: function transform(file, options, done) {
+		value: function transform(file) {
+			var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
-			settings = new Settings(file, options);
 
-			waterfall([checkFile, readFile, parseImports, filterImports, checkImports, readImports, inlineImports, writeFile], done);
+			var settings = new Settings(options.encoding, options.extensions, options.useVar);
+
+			return readFile(file, settings.encoding).then(function (result) {
+				return parseImports(result, file, settings.extensions);
+			}).then(function (result) {
+				return readImports.apply(undefined, toConsumableArray(result));
+			}).then(function (result) {
+				return inlineImports.apply(undefined, toConsumableArray(result).concat([settings.declaration]));
+			}).then(function (result) {
+				return writeFile.apply(undefined, toConsumableArray(result).concat([file]));
+			});
 		}
 	}]);
 	return InlineImport;
