@@ -35,20 +35,20 @@ To inline your file imports, you need to specify the path to the JavaScript
 file that should be modified. Additionally, you need to define the 
 ```extensions``` of the relevant import statements.
 
-##### text.txt
+#### text.txt
 
 ```
 hello world
 ```
 
-##### index.js
+#### index.js
 
 ```javascript
-import stuff from "garage";
+import component from "module";
 import text from "./text.txt";
 ```
 
-##### inline.js
+#### inline.js
 
 ```javascript
 import InlineImport from "inline-import";
@@ -59,13 +59,21 @@ InlineImport.transform("index.js", {
 		".txt": "utf8"
 	}
 
-}, function done(error) {});
+}).then(successMessage => {
+
+	console.log(successMessage);
+
+}).catch(e => {
+
+	console.error(e);
+
+});
 ```
 
-##### index.js (inlined)
+#### index.js (inlined)
 
 ```javascript
-import stuff from "garage";
+import component from "module";
 const text = "hello world";
 ```
 
@@ -86,11 +94,11 @@ InlineImport.transform(filePath, {
 		".html": "utf8",
 		".png": "base64"
 	}
-});
+}).catch(e => console.error(e));
 ```
 
 
-## Build Tools
+## Build Tool Integration
 
  - [Inline Import Grunt plugin](https://github.com/vanruesc/grunt-inline-import)
 
