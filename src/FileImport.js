@@ -61,7 +61,6 @@ export class FileImport {
 		 * The contents of the imported file.
 		 *
 		 * @type {String}
-		 * @default null
 		 */
 
 		this.data = data;

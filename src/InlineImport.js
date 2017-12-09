@@ -1,4 +1,3 @@
-import waterfall from "async-waterfall";
 import path from "path";
 import fs from "fs";
 
@@ -6,7 +5,8 @@ import { FileImport } from "./FileImport.js";
 import { Settings } from "./Settings.js";
 
 /**
- * A regular expression that detects import statements.
+ * A regular expression that detects import statements of the form:
+ * `import a from "b"`.
  *
  * @type {RegExp}
  * @private
@@ -15,36 +15,21 @@ import { Settings } from "./Settings.js";
 const importRegExp = /import\s*(\w*)\s*from\s*["'](.*)["']/ig;
 
 /**
- * The current inlining settings.
- *
- * @type {Settings}
- */
-
-let settings = null;
-
-/**
- * Checks if the given file exists.
- *
- * @private
- * @param {Function} next - A callback.
- */
-
-function checkFile(next) {
-
-	fs.access(settings.file, (fs.R_OK | fs.W_OK), next);
-
-}
-
-/**
  * Reads the given file.
  *
  * @private
- * @param {Function} next - A callback.
+ * @param {String} file - A file path.
+ * @param {String} encoding - The file encoding.
+ * @return {Promise} A promise.
  */
 
-function readFile(next) {
+function readFile(file, encoding) {
 
-	fs.readFile(settings.file, settings.encoding, next);
+	return new Promise((resolve, reject) => {
+
+		fs.readFile(file, encoding, (error, data) => error ? reject(error) : resolve(data));
+
+	});
 
 }
 
@@ -53,92 +38,40 @@ function readFile(next) {
  *
  * @private
  * @param {String} data - The file contents.
- * @param {Function} next - A callback.
+ * @param {String} file - The path of the source file.
+ * @param {Object} extensions - Extensions of imports that shall be inlined.
+ * @return {Promise} A promise.
  */
 
-function parseImports(data, next) {
+function parseImports(data, file, extensions) {
 
 	const imports = [];
 
 	let result = importRegExp.exec(data);
+	let encoding;
 
 	while(result !== null) {
 
-		imports.push(new FileImport(
-			result.index,
-			importRegExp.lastIndex,
-			result[1],
-			path.resolve(path.dirname(settings.file), result[2]),
-			settings.extensions[path.extname(result[2])]
-		));
+		encoding = extensions[path.extname(result[2])];
+
+		// Filter irrelevant imports.
+		if(encoding !== undefined) {
+
+			imports.push(new FileImport(
+				result.index,
+				importRegExp.lastIndex,
+				result[1],
+				path.resolve(path.dirname(file), result[2]),
+				encoding
+			));
+
+		}
 
 		result = importRegExp.exec(data);
 
 	}
 
-	// The file might have no imports at all.
-	next(null, imports, data);
-
-}
-
-/**
- * Filters imports.
- *
- * @private
- * @param {FileImport[]} imports - A list of all identified import statements.
- * @param {String} data - The file contents.
- * @param {Function} next - A callback.
- */
-
-function filterImports(imports, data, next) {
-
-	const filteredImports = [];
-
-	let i, l;
-
-	for(i = 0, l = imports.length; i < l; ++i) {
-
-		if(imports[i].encoding !== undefined) {
-
-			filteredImports.push(imports[i]);
-
-		}
-
-	}
-
-	// Might end up with no imports.
-	next(null, filteredImports, data);
-
-}
-
-/**
- * Checks if the remaining imports are valid. If only one import is invalid, the
- * entire inlining process will be cancelled.
- *
- * @private
- * @param {FileImport[]} imports - A list of all relevant import statements.
- * @param {String} data - The file contents.
- * @param {Function} next - A callback.
- */
-
-function checkImports(imports, data, next) {
-
-	let i = 0;
-	let l = imports.length;
-
-	(function proceed(error) {
-
-		if(error || i === l) {
-
-			next(error, imports, data);
-
-		} else {
-
-			fs.access(imports[i++].path, (fs.R_OK | fs.W_OK), proceed);
-
-		}
-
-	}());
+	return Promise.resolve([imports, data]);
 
 }
 
@@ -146,48 +79,42 @@ function checkImports(imports, data, next) {
  * Reads the contents of the imported files.
  *
  * @private
- * @param {FileImport[]} imports - A list of all relevant and valid import statements.
+ * @param {FileImport[]} imports - A list of relevant import statements.
  * @param {String} data - The file contents.
- * @param {Function} next - A callback.
+ * @return {Promise} A promise.
  */
 
-function readImports(imports, data, next) {
+function readImports(imports, data) {
 
-	let j;
-	let i = -1;
-	let l = imports.length;
+	return (imports.length === 0) ? Promise.resolve([imports, data]) : new Promise((resolve, reject) => {
 
-	(function proceed(error, importData) {
+		let i = 0;
 
-		j = i;
+		(function proceed(error, importData) {
 
-		if(error || ++i === l) {
+			if(importData) {
 
-			// Check if there are any imports.
-			if(l > 0) {
-
-				// If so, don't forget to pick up the one that was read last.
-				imports[j].data = importData;
+				imports[i++].data = importData;
 
 			}
 
-			next(error, imports, data);
+			if(error) {
 
-		} else {
+				reject(error);
 
-			// Skip this during the first run.
-			if(i > 0) {
+			} else if(i === imports.length) {
 
-				// Collect the data. The index i is one step ahead of j.
-				imports[j].data = importData;
+				resolve([imports, data]);
+
+			} else {
+
+				fs.readFile(imports[i].path, imports[i].encoding, proceed);
 
 			}
 
-			fs.readFile(imports[i].path, imports[i].encoding, proceed);
+		}());
 
-		}
-
-	}());
+	});
 
 }
 
@@ -197,26 +124,27 @@ function readImports(imports, data, next) {
  * @private
  * @param {FileImport[]} imports - A list of all relevant imports.
  * @param {String} data - The original file contents.
- * @param {Function} next - A callback.
+ * @param {String} declaration - The import variable declaration.
+ * @return {Promise} A promise.
  */
 
-function inlineImports(imports, data, next) {
+function inlineImports(imports, data, declaration) {
 
 	let modified = imports.length > 0;
-	let i;
+	let i, item;
 
 	// Inline the imports in reverse order to keep the indices intact.
-	while(imports.length > 0) {
+	for(i = imports.length - 1; i >= 0; --i) {
 
-		i = imports.pop();
+		item = imports[i];
 
-		data = data.substring(0, i.start) +
-			settings.declaration + " " + i.name + " = " + JSON.stringify(i.data) +
-			data.substring(i.end);
+		data = data.substring(0, item.start) +
+			declaration + " " + item.name + " = " + JSON.stringify(item.data) +
+			data.substring(item.end);
 
 	}
 
-	next(null, modified, data);
+	return Promise.resolve([modified, data]);
 
 }
 
@@ -226,23 +154,23 @@ function inlineImports(imports, data, next) {
  * @private
  * @param {Boolean} modified - Indicates whether the file contents have been modified.
  * @param {String} data - The modified file contents.
- * @param {Function} next - A callback.
+ * @param {String} file - The file path.
+ * @return {Promise} A promise.
  */
 
-function writeFile(modified, data, next) {
+function writeFile(modified, data, file) {
 
-	if(modified) {
+	return !modified ? Promise.resolve("Nothing changed") : new Promise((resolve, reject) => {
 
-		fs.writeFile(settings.file, data, next);
+		fs.writeFile(file, data, (error) => {
 
-	} else {
+			error ? reject(error) : resolve("Success");
 
-		next(null);
+		});
 
-	}
+	});
 
 }
-
 
 /**
  * Inlines file imports.
@@ -259,23 +187,18 @@ export class InlineImport {
 	 * @param {String} [options.encoding] - The encoding of the given file.
 	 * @param {Object} [options.extensions] - The import file extensions to consider. Each extension must define an encoding.
 	 * @param {Boolean} [options.useVar] - Whether the var declaration should be used instead of const.
-	 * @param {Function} [done] - An optional callback function with one argument (any value other than null indicates an error).
+	 * @return {Promise} A promise.
 	 */
 
-	static transform(file, options, done) {
+	static transform(file, options = {}) {
 
-		settings = new Settings(file, options);
+		const settings = new Settings(options.encoding, options.extensions, options.useVar);
 
-		waterfall([
-			checkFile,
-			readFile,
-			parseImports,
-			filterImports,
-			checkImports,
-			readImports,
-			inlineImports,
-			writeFile
-		], done);
+		return readFile(file, settings.encoding)
+			.then(result => parseImports(result, file, settings.extensions))
+			.then(result => readImports(...result))
+			.then(result => inlineImports(...result, settings.declaration))
+			.then(result => writeFile(...result, file));
 
 	}
 

@@ -19,16 +19,19 @@ module.exports = {
 
 		"basic inlining and filtering": function(test) {
 
-			test.expect(2);
+			test.expect(1);
 
-			InlineImport.transform("test/inline/a/index.js", options, function(error) {
-
-				test.equal(error, null, (error !== null) ? error.message : null);
+			InlineImport.transform("test/inline/a/index.js", options).then(() => {
 
 				const actual = grunt.file.read("test/inline/a/index.js").replace(EOL, "");
 				const expected = grunt.file.read("test/expected/a");
 
 				test.equal(actual, expected);
+				test.done();
+
+			}).catch((error) => {
+
+				console.error(error);
 				test.done();
 
 			});
@@ -37,16 +40,19 @@ module.exports = {
 
 		"ignores unrelated imports": function(test) {
 
-			test.expect(2);
+			test.expect(1);
 
-			InlineImport.transform("test/inline/b/index.js", options, function(error) {
-
-				test.equal(error, null, (error !== null) ? error.message : null);
+			InlineImport.transform("test/inline/b/index.js", options).then(() => {
 
 				const actual = grunt.file.read("test/inline/b/index.js").replace(EOL, "");
 				const expected = grunt.file.read("test/expected/b");
 
 				test.equal(actual, expected);
+				test.done();
+
+			}).catch((error) => {
+
+				console.error(error);
 				test.done();
 
 			});
@@ -55,16 +61,19 @@ module.exports = {
 
 		"inlines image files": function(test) {
 
-			test.expect(2);
+			test.expect(1);
 
-			InlineImport.transform("test/inline/c/index.js", options, function(error) {
-
-				test.equal(error, null, (error !== null) ? error.message : null);
+			InlineImport.transform("test/inline/c/index.js", options).then(() => {
 
 				const actual = grunt.file.read("test/inline/c/index.js").replace(EOL, "");
 				const expected = grunt.file.read("test/expected/c");
 
 				test.equal(actual, expected);
+				test.done();
+
+			}).catch((error) => {
+
+				console.error(error);
 				test.done();
 
 			});
