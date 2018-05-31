@@ -5,6 +5,7 @@
 	"homepage": "https://github.com/vanruesc/inline-import",
 	"main": "build/inline-import.js",
 	"module": "src/index.js",
+	"sideEffects": false,
 	"license": "Zlib",
 
 	"keywords": [
