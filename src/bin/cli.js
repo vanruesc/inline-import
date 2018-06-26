@@ -14,12 +14,14 @@ import { InlineImport } from "../core/InlineImport.js";
 const argv = Object.assign({
 
 	config: ".inline-import.json",
+	backup: false,
 	restore: false
 
 }, yargs(process.argv.slice(2), {
 
 	alias: {
 		config: ["c"],
+		backup: ["b"],
 		restore: ["r"]
 	}
 
@@ -93,7 +95,7 @@ function restore(config) {
 
 					if(error === null) {
 
-						resolve("Files restored");
+						resolve();
 
 					} else {
 
@@ -267,5 +269,8 @@ function readConfig() {
 }
 
 // Program entry point.
-argv.restore ? readConfig().then(verifyConfig).then(restore).then(console.log).catch(console.error) :
-	readConfig().then(verifyConfig).then(backup).then(getFiles).then(result => inline(...result)).then(console.log).catch(console.error);
+const configPromise = readConfig().then(verifyConfig);
+
+argv.backup ? configPromise.then(backup).then(() => console.log("Backup created")).catch(console.error) :
+	argv.restore ? configPromise.then(restore).then(() => console.log("Files restored")).catch(console.error) :
+		configPromise.then(backup).then(getFiles).then(result => inline(...result)).then(console.log).catch(console.error);
