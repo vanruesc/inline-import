@@ -6,7 +6,7 @@
 	"main": "build/inline-import.js",
 	"module": "src/index.js",
 	"bin": {
-		"inline": "./bin/inline-import.js"
+		"inline": "./bin/cli.js"
 	},
 	"sideEffects": false,
 	"license": "Zlib",
