@@ -155,16 +155,16 @@ function inlineImports(imports, data, declaration) {
  * @param {Boolean} modified - Indicates whether the file contents have been modified.
  * @param {String} data - The modified file contents.
  * @param {String} file - The file path.
- * @return {Promise} A promise.
+ * @return {Promise} A promise that will return false if the file remained unchanged, or true if it was modified.
  */
 
 function writeFile(modified, data, file) {
 
-	return !modified ? Promise.resolve("Nothing changed") : new Promise((resolve, reject) => {
+	return !modified ? Promise.resolve(false) : new Promise((resolve, reject) => {
 
 		fs.writeFile(file, data, (error) => {
 
-			error ? reject(error) : resolve("Success");
+			error ? reject(error) : resolve(true);
 
 		});
 
@@ -187,7 +187,7 @@ export class InlineImport {
 	 * @param {String} [options.encoding] - The encoding of the given file.
 	 * @param {Object} [options.extensions] - The import file extensions to consider. Each extension must define an encoding.
 	 * @param {Boolean} [options.useVar] - Whether the var declaration should be used instead of const.
-	 * @return {Promise} A promise.
+	 * @return {Promise} A promise that will return false if the file remained unchanged, or true if it was modified.
 	 */
 
 	static transform(file, options = {}) {

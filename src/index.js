@@ -4,4 +4,4 @@
  * @module inline-import
  */
 
-export { InlineImport as default } from "./InlineImport.js";
+export { InlineImport as default } from "./core/InlineImport.js";
