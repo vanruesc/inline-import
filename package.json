@@ -69,7 +69,7 @@
 
 	"ava": {
 		"failFast": true,
-		"files": ["test/**/*.js"]
+		"files": ["test/test.js"]
 	},
 
 	"eslintConfig": {
