@@ -58,7 +58,8 @@
 		"build": "rollup -c",
 		"build:production": "cross-env BABEL_ENV=production rollup -c",
 		"doc": "esdoc",
-		"test": "ava"
+		"test": "ava",
+		"prepack": "npm run build:production && concat -o bin/inline-import.js shebang.txt bin/inline-import.js"
 	},
 
 	"engines": {
@@ -84,6 +85,7 @@
 		"babel-core": "6.x.x",
 		"babel-plugin-external-helpers": "6.x.x",
 		"babel-preset-env": "1.x.x",
+		"concat": "1.x.x",
 		"cross-env": "5.x.x",
 		"esdoc": "1.x.x",
 		"esdoc-standard-plugin": "1.x.x",

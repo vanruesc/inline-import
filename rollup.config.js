@@ -42,8 +42,7 @@ const bin = {
 	input: "src/bin/cli.js",
 	output: {
 		file: "bin/" + pkg.name + ".js",
-		format: "cjs",
-		banner: "#!/usr/bin/env node\n"
+		format: "cjs"
 	},
 
 	external: ["glob", "fs", "fs-extra", "path", "yargs-parser"],
