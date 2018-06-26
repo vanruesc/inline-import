@@ -1,7 +1,6 @@
-"use strict";
-
-const grunt = require("grunt");
-const InlineImport = require("../build/inline-import.js");
+import test from "ava";
+import fs from "fs";
+import InlineImport from "../build/inline-import.js";
 
 const options = {
 	extensions: {
@@ -13,73 +12,47 @@ const options = {
 
 const EOL = /(?:\\r\\n|\\r|\\n)/g;
 
-module.exports = {
+test("basic inlining and filtering", t => {
 
-	"Inline Import": {
+	t.plan(1);
 
-		"basic inlining and filtering": function(test) {
+	InlineImport.transform("test/inline/a/index.js", options).then(() => {
 
-			test.expect(1);
+		const actual = fs.readFile("test/inline/a/index.js").replace(EOL, "");
+		const expected = fs.readFile("test/expected/a");
 
-			InlineImport.transform("test/inline/a/index.js", options).then(() => {
+		t.is(actual, expected);
 
-				const actual = grunt.file.read("test/inline/a/index.js").replace(EOL, "");
-				const expected = grunt.file.read("test/expected/a");
+	}).catch((error) => t.fail(error));
 
-				test.equal(actual, expected);
-				test.done();
+});
 
-			}).catch((error) => {
+test("ignores unrelated imports", t => {
 
-				console.error(error);
-				test.done();
+	t.plan(1);
 
-			});
+	InlineImport.transform("test/inline/b/index.js", options).then(() => {
 
-		},
+		const actual = fs.readFile("test/inline/b/index.js").replace(EOL, "");
+		const expected = fs.readFile("test/expected/b");
 
-		"ignores unrelated imports": function(test) {
+		test.is(actual, expected);
 
-			test.expect(1);
+	}).catch((error) => t.fail(error));
 
-			InlineImport.transform("test/inline/b/index.js", options).then(() => {
+});
 
-				const actual = grunt.file.read("test/inline/b/index.js").replace(EOL, "");
-				const expected = grunt.file.read("test/expected/b");
+test("inlines image files", t => {
 
-				test.equal(actual, expected);
-				test.done();
+	t.plan(1);
 
-			}).catch((error) => {
+	InlineImport.transform("test/inline/c/index.js", options).then(() => {
 
-				console.error(error);
-				test.done();
+		const actual = fs.readFile("test/inline/c/index.js").replace(EOL, "");
+		const expected = fs.readFile("test/expected/c");
 
-			});
+		test.is(actual, expected);
 
-		},
+	}).catch((error) => t.fail(error));
 
-		"inlines image files": function(test) {
-
-			test.expect(1);
-
-			InlineImport.transform("test/inline/c/index.js", options).then(() => {
-
-				const actual = grunt.file.read("test/inline/c/index.js").replace(EOL, "");
-				const expected = grunt.file.read("test/expected/c");
-
-				test.equal(actual, expected);
-				test.done();
-
-			}).catch((error) => {
-
-				console.error(error);
-				test.done();
-
-			});
-
-		}
-
-	}
-
-};
+});
