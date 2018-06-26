@@ -41,7 +41,7 @@ const bin = {
 
 	input: "src/bin/cli.js",
 	output: {
-		file: "bin/" + pkg.name + ".js",
+		file: "bin/cli.js",
 		format: "cjs"
 	},
 
