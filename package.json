@@ -9,12 +9,24 @@
 	"license": "Zlib",
 
 	"keywords": [
-		"file", "import", "inline",
-		"glsl", "frag", "vert", "shader",
-		"html", "css", "xml", "txt",
-		"binary", "hex", "buffer",
-		"jpg", "png", "image",
-		"base64"
+		"file",
+		"import",
+		"inline",
+		"glsl",
+		"frag",
+		"vert",
+		"shader",
+		"html",
+		"css",
+		"xml",
+		"txt",
+		"jpg",
+		"png",
+		"image",
+		"binary",
+		"hex",
+		"base64",
+		"buffer"
 	],
 
 	"author": {
