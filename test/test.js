@@ -14,45 +14,39 @@ const EOL = /(?:\\r\\n|\\r|\\n)/g;
 
 test("basic inlining and filtering", t => {
 
-	t.plan(1);
+	return InlineImport.transform("test/inline/a/index.js", options).then(() => {
 
-	InlineImport.transform("test/inline/a/index.js", options).then(() => {
-
-		const actual = fs.readFile("test/inline/a/index.js").replace(EOL, "");
-		const expected = fs.readFile("test/expected/a");
+		const actual = fs.readFileSync("test/inline/a/index.js", "utf8").replace(EOL, "");
+		const expected = fs.readFileSync("test/expected/a", "utf8");
 
 		t.is(actual, expected);
 
-	}).catch((error) => t.fail(error));
+	});
 
 });
 
 test("ignores unrelated imports", t => {
 
-	t.plan(1);
+	return InlineImport.transform("test/inline/b/index.js", options).then(() => {
 
-	InlineImport.transform("test/inline/b/index.js", options).then(() => {
+		const actual = fs.readFileSync("test/inline/b/index.js", "utf8").replace(EOL, "");
+		const expected = fs.readFileSync("test/expected/b", "utf8");
 
-		const actual = fs.readFile("test/inline/b/index.js").replace(EOL, "");
-		const expected = fs.readFile("test/expected/b");
+		t.is(actual, expected);
 
-		test.is(actual, expected);
-
-	}).catch((error) => t.fail(error));
+	});
 
 });
 
 test("inlines image files", t => {
 
-	t.plan(1);
+	return InlineImport.transform("test/inline/c/index.js", options).then(() => {
 
-	InlineImport.transform("test/inline/c/index.js", options).then(() => {
+		const actual = fs.readFileSync("test/inline/c/index.js", "utf8").replace(EOL, "");
+		const expected = fs.readFileSync("test/expected/c", "utf8");
 
-		const actual = fs.readFile("test/inline/c/index.js").replace(EOL, "");
-		const expected = fs.readFile("test/expected/c");
+		t.is(actual, expected);
 
-		test.is(actual, expected);
-
-	}).catch((error) => t.fail(error));
+	});
 
 });
