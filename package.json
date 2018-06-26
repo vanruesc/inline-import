@@ -58,8 +58,8 @@
 		"build": "rollup -c",
 		"build:production": "cross-env BABEL_ENV=production rollup -c",
 		"doc": "esdoc",
-		"test": "ava",
-		"prepack": "npm run build:production && concat -o bin/inline-import.js shebang.txt bin/inline-import.js"
+		"test": "node bin/cli.js -b && ava && node bin/cli.js -r",
+		"prepack": "npm run build:production && concat -o bin/cli.js shebang.txt bin/cli.js"
 	},
 
 	"engines": {
