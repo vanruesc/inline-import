@@ -87,11 +87,11 @@ function restore(config) {
 
 		fs.copy(path.join(backupPath, sourceBasename), sourcePath, (error) => {
 
-			if(error === null) {
+			if(error === undefined || error === null) {
 
 				fs.remove(backupPath, (error) => {
 
-					if(error === undefined || error === null) {
+					if(error === null) {
 
 						resolve("Files restored");
 
