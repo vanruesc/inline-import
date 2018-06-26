@@ -3,7 +3,7 @@
 	"src": "test/inline/**/*.js",
 
 	"options": {
-		extensions: {
+		"extensions": {
 			".frag": "utf8",
 			".vert": "utf8",
 			".png": "base64"
