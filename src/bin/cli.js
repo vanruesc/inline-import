@@ -227,7 +227,15 @@ function readConfig() {
 
 			if(error === null) {
 
-				config = JSON.parse(data).inlineImport;
+				try {
+
+					config = JSON.parse(data).inlineImport;
+
+				} catch(error) {
+
+					reject(error);
+
+				}
 
 			}
 
@@ -254,7 +262,15 @@ function readConfig() {
 
 					} else {
 
-						resolve(JSON.parse(data));
+						try {
+
+							resolve(JSON.parse(data));
+
+						} catch(error) {
+
+							reject(error);
+
+						}
 
 					}
 
