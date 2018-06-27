@@ -48,6 +48,8 @@ You can restore the original files by using the `--restore` option.
 | --backup  | -b      | Only copies files into a backup directory |
 | --restore | -r      | Restores files from the backup directory  |
 
+#### Example
+
 ```sh
 inline -c config/inline-import.json
 ```
