@@ -28,45 +28,99 @@ const argv = Object.assign({
 }));
 
 /**
- * Copies files into a backup directory.
+ * Deletes the backup directory.
  *
  * @param {Object} config - A configuration.
- * @return {Promise} A promise.
+ * @return {Promise} A promise that returns the given configuration.
  */
 
-function backup(config) {
+function deleteBackup(config) {
 
 	return new Promise((resolve, reject) => {
 
 		const backupPath = path.join(process.cwd(), (config.backup !== undefined) ? config.backup : ".backup");
-		const sourcePath = path.join(process.cwd(), config.src.split("*")[0]);
-		const sourceBasename = path.basename(sourcePath);
 
 		fs.remove(backupPath, (error) => {
 
-			if(error === null) {
+			(error === null) ? resolve(config) : reject(error);
 
-				fs.copy(sourcePath, path.join(backupPath, sourceBasename), (error) => {
+		});
 
-					if(error === undefined || error === null) {
+	});
 
-						resolve(config);
+}
 
-					} else {
+/**
+ * Copies files from one path to another.
+ *
+ * @param {String} src - The source path.
+ * @param {String} dest - The destination path.
+ * @return {Promise} A promise.
+ */
 
-						reject(error);
+function copy(src, dest) {
 
-					}
+	return new Promise((resolve, reject) => {
 
-				});
+		fs.copy(src, dest, (error) => {
 
-			} else {
+			(error === undefined || error === null) ? resolve() : reject(error);
+
+		});
+
+	});
+
+}
+
+/**
+ * Copies files into a backup directory.
+ *
+ * @param {Object} config - A configuration.
+ * @return {Promise} A promise that returns the given configuration.
+ */
+
+function createBackup(config) {
+
+	return new Promise((resolve, reject) => {
+
+		const backupPath = path.join(process.cwd(), (config.backup !== undefined) ? config.backup : ".backup");
+		const src = config.src;
+
+		let sourcePath;
+		let basename;
+		let index;
+		let i = 0;
+
+		(function proceed(error, files) {
+
+			if(error !== undefined && error !== null) {
 
 				reject(error);
 
+			} else if(i === src.length) {
+
+				resolve(config);
+
+			} else {
+
+				sourcePath = src[i++];
+				index = sourcePath.indexOf("*");
+
+				if(index >= 0) {
+
+					sourcePath = sourcePath.substring(0, index);
+
+				}
+
+				basename = (path.extname(sourcePath) !== "") ?
+					path.join(path.basename(path.dirname(sourcePath)), path.basename(sourcePath)) :
+					path.basename(sourcePath);
+
+				copy(path.join(process.cwd(), sourcePath), path.join(backupPath, basename)).then(proceed).catch(reject);
+
 			}
 
-		});
+		}());
 
 	});
 
@@ -84,34 +138,43 @@ function restore(config) {
 	return new Promise((resolve, reject) => {
 
 		const backupPath = path.join(process.cwd(), (config.backup !== undefined) ? config.backup : ".backup");
-		const sourcePath = path.join(process.cwd(), config.src.split("*")[0]);
-		const sourceBasename = path.basename(sourcePath);
+		const src = config.src;
 
-		fs.copy(path.join(backupPath, sourceBasename), sourcePath, (error) => {
+		let sourcePath;
+		let basename;
+		let index;
+		let i = 0;
 
-			if(error === undefined || error === null) {
+		(function proceed(error, files) {
 
-				fs.remove(backupPath, (error) => {
-
-					if(error === null) {
-
-						resolve();
-
-					} else {
-
-						reject(error);
-
-					}
-
-				});
-
-			} else {
+			if(error !== undefined && error !== null) {
 
 				reject(error);
 
+			} else if(i === src.length) {
+
+				resolve(config);
+
+			} else {
+
+				sourcePath = src[i++];
+				index = sourcePath.indexOf("*");
+
+				if(index >= 0) {
+
+					sourcePath = sourcePath.substring(0, index);
+
+				}
+
+				basename = (path.extname(sourcePath) !== "") ?
+					path.join(path.basename(path.dirname(sourcePath)), path.basename(sourcePath)) :
+					path.basename(sourcePath);
+
+				copy(path.join(backupPath, basename), path.join(process.cwd(), sourcePath)).then(proceed).catch(reject);
+
 			}
 
-		});
+		}());
 
 	});
 
@@ -122,7 +185,7 @@ function restore(config) {
  *
  * @param {Object} config - A configuration.
  * @param {String[]} files - The files.
- * @return {Promise} A promise.
+ * @return {Promise} A promise that returns an info message.
  */
 
 function inline(config, files) {
@@ -157,29 +220,37 @@ function inline(config, files) {
 }
 
 /**
- * Inlines file imports.
+ * Gathers files that will be modified.
  *
  * @type {Object} config - A configuration.
- * @return {Promise} A promise.
+ * @return {Promise} A promise that returns an array containing the given configuration and the identified files.
  */
 
 function getFiles(config) {
 
 	return new Promise((resolve, reject) => {
 
-		glob(config.src, (error, files) => {
+		const src = config.src;
 
-			if(error === null) {
+		let i = 0;
+
+		(function proceed(error, files) {
+
+			if(error !== undefined && error !== null) {
+
+				reject(error);
+
+			} else if(i === src.length) {
 
 				resolve([config, files]);
 
 			} else {
 
-				reject(error);
+				glob(src[i++], proceed);
 
 			}
 
-		});
+		}());
 
 	});
 
@@ -189,7 +260,7 @@ function getFiles(config) {
  * Verifies a given configuration.
  *
  * @param {Object} A configuration.
- * @return {Promise} A promise.
+ * @return {Promise} A promise that returns the given configuration.
  */
 
 function verifyConfig(config) {
@@ -197,6 +268,12 @@ function verifyConfig(config) {
 	return new Promise((resolve, reject) => {
 
 		if(config.src !== undefined) {
+
+			if(!Array.isArray(config.src)) {
+
+				config.src = [config.src];
+
+			}
 
 			resolve(config);
 
@@ -213,7 +290,7 @@ function verifyConfig(config) {
 /**
  * Loads the configuration.
  *
- * @return {Promise} A promise.
+ * @return {Promise} A promise that returns the configuration.
  */
 
 function readConfig() {
@@ -287,6 +364,6 @@ function readConfig() {
 // Program entry point.
 const configPromise = readConfig().then(verifyConfig);
 
-argv.backup ? configPromise.then(backup).then(() => console.log("Backup created")).catch(console.error) :
-	argv.restore ? configPromise.then(restore).then(() => console.log("Files restored")).catch(console.error) :
-		configPromise.then(backup).then(getFiles).then(result => inline(...result)).then(console.log).catch(console.error);
+argv.backup ? configPromise.then(deleteBackup).then(createBackup).then(() => console.log("Backup created")).catch(console.error) :
+	argv.restore ? configPromise.then(restore).then(deleteBackup).then(() => console.log("Files restored")).catch(console.error) :
+		configPromise.then(deleteBackup).then(createBackup).then(getFiles).then(result => inline(...result)).then(console.log).catch(console.error);

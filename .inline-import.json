@@ -1,6 +1,6 @@
 {
 
-	"src": "test/inline/**/*.js",
+	"src": ["test/inline/**/*.js"],
 
 	"options": {
 		"extensions": {

@@ -32,8 +32,9 @@ npm install inline-import
 
 ### Command Line Interface (CLI)
 
-The command line tool requires a configuration in which the source path and the [options](#options) are specified.
-You can decide whether you want to provide the configuration via `package.json` or as a standalone file. 
+The command line tool can be invoked using the `inline` command and it requires a configuration in which the
+source path and the [options](#options) are specified. You can decide whether you want to provide the configuration
+via `package.json` or as a standalone file. 
 
 If there is no configuration in `package.json`, the tool will look for a configuration file with the
 default name `.inline-import.json` in the current working directory.
@@ -46,6 +47,10 @@ You can restore the original files by using the `--restore` option.
 | --config  | -c      | Specifies an alternative config path      |
 | --backup  | -b      | Only copies files into a backup directory |
 | --restore | -r      | Restores files from the backup directory  |
+
+```sh
+inline -c config/inline-import.json
+```
 
 
 ### JavaScript API
@@ -96,19 +101,20 @@ const text = "hello world";
 
 ## Options
 
-- When using the command line tool, `src` must be specified.
-- When using the command line tool, an alternative `backup` path may be specified.
-- You may define a specific ```encoding``` for the JavaScript files that will be processed. 
+- Command line exclusive:
+  - You must specify a list of target source paths under `src`.
+  - An alternative `backup` path may be specified. The default path is _.backup_.
+- You may define a specific `encoding` for the JavaScript files that will be processed. 
 Use one of the possible encoding values specified in node's [Buffer](https://github.com/nodejs/node/blob/master/lib/buffer.js) class. 
 The default encoding is _utf8_.
-- Only imports with matching file ```extensions``` will be considered. Each extension must define its own encoding.
-- If, for some reason, you don't want to use the _const_ statement, set ```useVar``` to _true_.  
+- Only imports with matching file `extensions` will be considered. Each extension must define its own encoding.
+- If, for some reason, you don't want to use the _const_ statement, set `useVar` to _true_.  
 
 #### .inline-import.json
 
 ```javascript
 {
-	"src": "src/**/*.js",
+	"src": ["src/**/*.js"],
 	"backup": "path/to/backup",
 	"encoding": "utf8",
 	"useVar": true,
@@ -124,7 +130,7 @@ The default encoding is _utf8_.
 ```javascript
 {
 	"inlineImport": {
-		"src": "src/**/*.js",
+		"src": ["src/**/*.js"],
 		"extensions": {}
 	}
 }
