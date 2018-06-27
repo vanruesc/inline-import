@@ -51,28 +51,6 @@ function deleteBackup(config) {
 }
 
 /**
- * Copies files from one path to another.
- *
- * @param {String} src - The source path.
- * @param {String} dest - The destination path.
- * @return {Promise} A promise.
- */
-
-function copy(src, dest) {
-
-	return new Promise((resolve, reject) => {
-
-		fs.copy(src, dest, (error) => {
-
-			(error === undefined || error === null) ? resolve() : reject(error);
-
-		});
-
-	});
-
-}
-
-/**
  * Copies files into a backup directory or restores files from the backup
  * directory depending on the command line arguments.
  *
@@ -119,11 +97,11 @@ function backup(config) {
 
 				if(argv.restore && !argv.backup) {
 
-					copy(path.join(backupPath, basename), path.join(process.cwd(), sourcePath)).then(proceed).catch(reject);
+					fs.copy(path.join(backupPath, basename), path.join(process.cwd(), sourcePath)).then(proceed).catch(reject);
 
 				} else {
 
-					copy(path.join(process.cwd(), sourcePath), path.join(backupPath, basename)).then(proceed).catch(reject);
+					fs.copy(path.join(process.cwd(), sourcePath), path.join(backupPath, basename)).then(proceed).catch(reject);
 
 				}
 
