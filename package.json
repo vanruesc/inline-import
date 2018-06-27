@@ -57,7 +57,6 @@
 		"lint:test": "eslint test",
 		"build": "rollup -c",
 		"build:production": "cross-env BABEL_ENV=production rollup -c",
-		"doc": "esdoc",
 		"test": "node bin/cli.js -b && ava && node bin/cli.js -r",
 		"prepack": "npm run build:production && concat -o bin/cli.js shebang.txt bin/cli.js"
 	},
@@ -87,8 +86,6 @@
 		"babel-preset-env": "1.x.x",
 		"concat": "1.x.x",
 		"cross-env": "5.x.x",
-		"esdoc": "1.x.x",
-		"esdoc-standard-plugin": "1.x.x",
 		"eslint": "5.x.x",
 		"eslint-config-delta": "0.x.x",
 		"fs-extra": "6.x.x",
