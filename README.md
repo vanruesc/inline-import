@@ -32,18 +32,20 @@ npm install inline-import
 
 ### Command Line Interface (CLI)
 
-The path to the source files that shall be transformed must be provided via a configuration file. You can decide whether you want to provide the configuration via `package.json` or as a standalone file. 
+The command line tool requires a configuration in which the source path and the [options](#options) are specified.
+You can decide whether you want to provide a configuration via `package.json` or as a standalone file. 
 
 If there is no configuration in `package.json`, the tool will look for a configuration file with the
 default name `.inline-import.json` in the current working directory.
+
+Affected files will automatically be copied into a backup directory before they are modified.
+You can restore the original files by using the `--restore` option.
 
 | Option    | Shorthand          | Description                    |
 |-----------|---------|-------------------------------------------|
 | --config  | -c      | Specifies an alternative config path      |
 | --backup  | -b      | Only copies files into a backup directory |
 | --restore | -r      | Restores files from the backup directory  |
-
-Affected files will automatically be copied into a backup directory before they are modified. You can restore the original files by using the `--restore` option.
 
 
 ### JavaScript API
@@ -108,6 +110,8 @@ The default encoding is _utf8_.
 // CLI.
 {
 	"src": "src/**/*.js",
+	"encoding": "utf8",
+	"useVar": true,
 	"extensions": {
 		".html": "utf8",
 		".png": "base64"
