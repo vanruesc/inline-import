@@ -30,7 +30,25 @@ npm install inline-import
 
 ## Usage
 
-The inlining process is __destructive__. Affected files will be changed __permanently__.  
+### Command Line Interface (CLI)
+
+The path to the source files that shall be transformed must be provided via a configuration file. You can decide whether you want to provide the configuration via `package.json` or as a standalone file. 
+
+If there is no configuration in `package.json`, the tool will look for a configuration file with the
+default name `.inline-import.json` in the current working directory.
+
+| Option    | Shorthand          | Description                    |
+|-----------|---------|-------------------------------------------|
+| --config  | -c      | Specifies an alternative config path      |
+| --backup  | -b      | Only copies files into a backup directory |
+| --restore | -r      | Restores files from the backup directory  |
+
+Affected files will automatically be copied into a backup directory before they are modified. You can restore the original files by using the `--restore` option.
+
+
+### JavaScript API
+
+The immediate inlining process is __destructive__. Affected files will be changed __permanently__.  
 To inline your file imports, you need to specify the path to the JavaScript 
 file that should be modified. Additionally, you need to define the 
 ```extensions``` of the relevant import statements.
@@ -87,6 +105,18 @@ The default encoding is _utf8_.
 - If, for some reason, you don't want to use the _const_ statement, set ```useVar``` to _true_.  
 
 ```javascript
+// CLI.
+{
+	"src": "src/**/*.js",
+	"extensions": {
+		".html": "utf8",
+		".png": "base64"
+	}
+}
+```
+
+```javascript
+// API.
 InlineImport.transform(filePath, {
 	encoding: "utf8",
 	useVar: true,
