@@ -100,16 +100,20 @@ const text = "hello world";
 
 ## Options
 
-- You may define a specific ```encoding``` for the JavaScript files that should be processed. 
+- When using the command line tool, `src` must be specified.
+- When using the command line tool, an alternative `backup` path may be specified.
+- You may define a specific ```encoding``` for the JavaScript files that will be processed. 
 Use one of the possible encoding values specified in node's [Buffer](https://github.com/nodejs/node/blob/master/lib/buffer.js) class. 
 The default encoding is _utf8_.
 - Only imports with matching file ```extensions``` will be considered. Each extension must define its own encoding.
 - If, for some reason, you don't want to use the _const_ statement, set ```useVar``` to _true_.  
 
+#### .inline-import.json
+
 ```javascript
-// CLI.
 {
 	"src": "src/**/*.js",
+	"backup": "path/to/backup",
 	"encoding": "utf8",
 	"useVar": true,
 	"extensions": {
@@ -119,15 +123,24 @@ The default encoding is _utf8_.
 }
 ```
 
+#### package.json
+
 ```javascript
-// API.
+{
+	"inlineImport": {
+		"src": "src/**/*.js",
+		"extensions": {}
+	}
+}
+```
+
+#### inline.js
+
+```javascript
 InlineImport.transform(filePath, {
 	encoding: "utf8",
 	useVar: true,
-	extensions: {
-		".html": "utf8",
-		".png": "base64"
-	}
+	extensions: {}
 }).catch(e => console.error(e));
 ```
 
