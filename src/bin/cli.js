@@ -73,13 +73,14 @@ function copy(src, dest) {
 }
 
 /**
- * Copies files into a backup directory.
+ * Copies files into a backup directory or restores files from the backup
+ * directory depending on the command line arguments.
  *
  * @param {Object} config - A configuration.
  * @return {Promise} A promise that returns the given configuration.
  */
 
-function createBackup(config) {
+function backup(config) {
 
 	return new Promise((resolve, reject) => {
 
@@ -116,61 +117,15 @@ function createBackup(config) {
 					path.join(path.basename(path.dirname(sourcePath)), path.basename(sourcePath)) :
 					path.basename(sourcePath);
 
-				copy(path.join(process.cwd(), sourcePath), path.join(backupPath, basename)).then(proceed).catch(reject);
+				if(argv.restore && !argv.backup) {
 
-			}
+					copy(path.join(backupPath, basename), path.join(process.cwd(), sourcePath)).then(proceed).catch(reject);
 
-		}());
+				} else {
 
-	});
-
-}
-
-/**
- * Restores files from the backup directory.
- *
- * @param {Object} config - A configuration.
- * @return {Promise} A promise.
- */
-
-function restore(config) {
-
-	return new Promise((resolve, reject) => {
-
-		const backupPath = path.join(process.cwd(), (config.backup !== undefined) ? config.backup : ".backup");
-		const src = config.src;
-
-		let sourcePath;
-		let basename;
-		let index;
-		let i = 0;
-
-		(function proceed(error, files) {
-
-			if(error !== undefined && error !== null) {
-
-				reject(error);
-
-			} else if(i === src.length) {
-
-				resolve(config);
-
-			} else {
-
-				sourcePath = src[i++];
-				index = sourcePath.indexOf("*");
-
-				if(index >= 0) {
-
-					sourcePath = sourcePath.substring(0, index);
+					copy(path.join(process.cwd(), sourcePath), path.join(backupPath, basename)).then(proceed).catch(reject);
 
 				}
-
-				basename = (path.extname(sourcePath) !== "") ?
-					path.join(path.basename(path.dirname(sourcePath)), path.basename(sourcePath)) :
-					path.basename(sourcePath);
-
-				copy(path.join(backupPath, basename), path.join(process.cwd(), sourcePath)).then(proceed).catch(reject);
 
 			}
 
@@ -364,6 +319,6 @@ function readConfig() {
 // Program entry point.
 const configPromise = readConfig().then(verifyConfig);
 
-argv.backup ? configPromise.then(deleteBackup).then(createBackup).then(() => console.log("Backup created")).catch(console.error) :
-	argv.restore ? configPromise.then(restore).then(deleteBackup).then(() => console.log("Files restored")).catch(console.error) :
-		configPromise.then(deleteBackup).then(createBackup).then(getFiles).then(result => inline(...result)).then(console.log).catch(console.error);
+argv.backup ? configPromise.then(deleteBackup).then(backup).then(() => console.log("Backup created")).catch(console.error) :
+	argv.restore ? configPromise.then(backup).then(deleteBackup).then(() => console.log("Files restored")).catch(console.error) :
+		configPromise.then(deleteBackup).then(backup).then(getFiles).then(result => inline(...result)).then(console.log).catch(console.error);
