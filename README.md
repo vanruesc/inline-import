@@ -79,15 +79,11 @@ InlineImport.transform("index.js", {
 		".txt": "utf8"
 	}
 
-}).then(successMessage => {
+}).then(modified => {
 
-	console.log(successMessage);
+	console.log(modified ? "Success!" : "Nothing changed");
 
-}).catch(e => {
-
-	console.error(e);
-
-});
+}).catch(console.error);
 ```
 
 #### index.js (inlined)
