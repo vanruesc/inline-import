@@ -33,7 +33,7 @@ npm install inline-import
 ### Command Line Interface (CLI)
 
 The command line tool requires a configuration in which the source path and the [options](#options) are specified.
-You can decide whether you want to provide a configuration via `package.json` or as a standalone file. 
+You can decide whether you want to provide the configuration via `package.json` or as a standalone file. 
 
 If there is no configuration in `package.json`, the tool will look for a configuration file with the
 default name `.inline-import.json` in the current working directory.
