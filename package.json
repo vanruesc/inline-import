@@ -48,7 +48,8 @@
 
 	"files": [
 		"src",
-		"build"
+		"build",
+		"bin"
 	],
 
 	"scripts": {
