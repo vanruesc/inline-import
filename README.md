@@ -32,7 +32,7 @@ npm install inline-import
 
 ### Command Line Interface (CLI)
 
-The command line tool can be invoked using the `inline` command. It requires a configuration in which the
+The command line tool can be invoked using the `inline-import` command. It requires a configuration in which the
 source paths and the [options](#options) are specified. You can decide whether you want to provide the configuration
 via `package.json` or as a standalone file. 
 
@@ -51,7 +51,7 @@ You can restore the original files by using the `--restore` option.
 #### Example
 
 ```sh
-inline -c config/inline-import.json
+inline-import -c config/inline-import.json
 ```
 
 
