@@ -27,7 +27,7 @@ const lib = {
 
 	external: ["fs", "path"],
 
-	plugins: [resolve()].concat(process.env.BABEL_ENV === "production" ?
+	plugins: [resolve()].concat(process.env.NODE_ENV === "production" ?
 		[babel(), minify({
 			bannerNewLine: true,
 			sourceMap: false,
@@ -47,7 +47,7 @@ const bin = {
 
 	external: ["glob", "fs", "fs-extra", "path", "yargs-parser"],
 
-	plugins: [resolve()].concat(process.env.BABEL_ENV === "production" ?
+	plugins: [resolve()].concat(process.env.NODE_ENV === "production" ?
 		[babel(), minify({
 			sourceMap: false,
 			comments: false

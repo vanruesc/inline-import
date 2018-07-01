@@ -57,7 +57,7 @@
 		"lint:lib": "eslint src",
 		"lint:test": "eslint test",
 		"build": "rollup -c",
-		"build:production": "cross-env BABEL_ENV=production rollup -c",
+		"build:production": "cross-env NODE_ENV=production rollup -c",
 		"test": "node bin/cli.js -b && ava && node bin/cli.js -r",
 		"prepack": "npm run lint && npm run build:production && concat -o bin/cli.js shebang.txt bin/cli.js"
 	},
