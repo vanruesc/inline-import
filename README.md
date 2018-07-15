@@ -42,11 +42,11 @@ default name `.inline-import.json` in the current working directory.
 Affected files will automatically be copied into a backup directory before they are modified.
 You can restore the original files by using the `--restore` option.
 
-| Option    | Shorthand          | Description                    |
-|-----------|---------|-------------------------------------------|
-| --config  | -c      | Specifies an alternative config path      |
-| --backup  | -b      | Only copies files into a backup directory |
-| --restore | -r      | Restores files from the backup directory  |
+| Option    | Shorthand | Description                               |
+|-----------|-----------|-------------------------------------------|
+| --config  | -c        | Specifies an alternative config path      |
+| --backup  | -b        | Only copies files into a backup directory |
+| --restore | -r        | Restores files from the backup directory  |
 
 #### Example
 
