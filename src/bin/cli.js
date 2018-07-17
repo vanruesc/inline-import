@@ -1,5 +1,5 @@
-import glob from "glob";
 import fs from "fs-extra";
+import glob from "glob";
 import path from "path";
 import yargs from "yargs-parser";
 import { InlineImport } from "../core/InlineImport.js";
@@ -164,26 +164,40 @@ function getFiles(config) {
 	return new Promise((resolve, reject) => {
 
 		const src = config.src;
-
+		let files = [];
 		let i = 0;
 
-		(function proceed(error, files) {
+		(function proceed(error, moreFiles) {
 
-			if(error !== undefined && error !== null) {
+			if(error !== null) {
 
 				reject(error);
 
-			} else if(i === src.length) {
-
-				resolve([config, files]);
-
 			} else {
 
-				glob(src[i++], proceed);
+				files = files.concat(moreFiles);
+
+				if(i === src.length) {
+
+					if(files.length === 0) {
+
+						reject("No input files found");
+
+					} else {
+
+						resolve([config, files]);
+
+					}
+
+				} else {
+
+					glob(src[i++], proceed);
+
+				}
 
 			}
 
-		}());
+		}(null, []));
 
 	});
 
