@@ -63,7 +63,7 @@
 		"build:production": "cross-env NODE_ENV=production rollup -c",
 		"pretest": "npm run lint && npm run build:production",
 		"test": "node bin/cli.js -b && ava && node bin/cli.js -r",
-		"prepack": "npm run pretest && concat -o bin/cli.js shebang.txt bin/cli.js"
+		"prepack": "npm run test && concat -o bin/cli.js shebang.txt bin/cli.js"
 	},
 
 	"ava": {
