@@ -190,13 +190,13 @@ function getFiles(config) {
 }
 
 /**
- * Verifies a given configuration.
+ * Validates a given configuration.
  *
- * @param {Object} A configuration.
+ * @param {Object} config - A configuration.
  * @return {Promise} A promise that returns the given configuration.
  */
 
-function verifyConfig(config) {
+function validateConfig(config) {
 
 	return new Promise((resolve, reject) => {
 
@@ -295,7 +295,7 @@ function readConfig() {
 }
 
 // Program entry point.
-const configPromise = readConfig().then(verifyConfig);
+const configPromise = readConfig().then(validateConfig);
 
 argv.backup ? configPromise.then(deleteBackup).then(backup).then(() => console.log("Backup created")).catch(console.error) :
 	argv.restore ? configPromise.then(backup).then(deleteBackup).then(() => console.log("Files restored")).catch(console.error) :

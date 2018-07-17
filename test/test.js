@@ -1,5 +1,5 @@
-import test from "ava";
 import fs from "fs";
+import test from "ava";
 import InlineImport from "../build/inline-import.js";
 
 const options = {
