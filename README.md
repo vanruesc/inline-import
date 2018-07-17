@@ -9,16 +9,14 @@ A tool that inlines custom file imports.
 
 ## Use Case
 
-Instead of loading external files during runtime, you may wish to integrate the 
-raw file contents directly into your JavaScript files during build time. This
-can be achieved using the native ```import``` syntax:
+Instead of loading external files during runtime, you may wish to integrate the raw file contents directly into your
+JavaScript files before shipping it. This tool allows you to use the native ```import``` syntax to include any data:
 
 ```javascript
 import data from "./data.png";
 ```
 
-The type of the external file is irrelevant. You only need to specify a
-preferred encoding for each file type.
+The type of the imported file can be anything. You only need to specify a preferred encoding for each file type.
 
 
 ## Installation
@@ -39,6 +37,10 @@ via `package.json` or as a standalone file.
 If there is no configuration in `package.json`, the tool will look for a configuration file with the
 default name `.inline-import.json` in the current working directory.
 
+```sh
+inline-import -c config/inline-import.json
+```
+
 Affected files will automatically be copied into a backup directory before they are modified.
 You can restore the original files by using the `--restore` option.
 
@@ -47,12 +49,6 @@ You can restore the original files by using the `--restore` option.
 | --config  | -c        | Specifies an alternative config path      |
 | --backup  | -b        | Only copies files into a backup directory |
 | --restore | -r        | Restores files from the backup directory  |
-
-#### Example
-
-```sh
-inline-import -c config/inline-import.json
-```
 
 
 ### JavaScript API
@@ -104,7 +100,7 @@ const text = "hello world";
 ## Options
 
 - Command line exclusive:
-  - You must specify a list of target source paths under `src`.
+  - You must specify a source path or a list of paths under `src`. Glob patterns are supported.
   - An alternative `backup` path may be specified. The default path is _.backup_.
 - You may define a specific `encoding` for the JavaScript files that will be processed. 
 Use one of the possible encoding values specified in node's [Buffer](https://github.com/nodejs/node/blob/master/lib/buffer.js) class. 
@@ -132,7 +128,7 @@ The default encoding is _utf8_.
 ```javascript
 {
 	"inlineImport": {
-		"src": ["src/**/*.js"],
+		"src": "src/**/*.js",
 		"extensions": {}
 	}
 }
