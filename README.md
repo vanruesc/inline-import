@@ -9,8 +9,8 @@ A tool that inlines custom file imports.
 
 ## Use Case
 
-Instead of loading external files during runtime, you may wish to integrate the raw file contents directly into your
-JavaScript files during build time. This tool allows you to use the native ```import``` syntax to include any data:
+Instead of loading external files at runtime, you may wish to integrate the raw file contents directly into your
+JavaScript files at build time. This tool allows you to use the native ```import``` syntax to include any data:
 
 ```javascript
 import data from "./data.png";
